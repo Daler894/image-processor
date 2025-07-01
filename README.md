@@ -19,7 +19,7 @@ https://www.python.org/downloads/release/python-380/
 ```
 2. Скачайте мой проект в GitHub
 ```download
-https://github.com/EgorProx/OznakomitelnayaPractice
+https://github.com/Daler894/image-processor
 Code -> Download ZIP
 ```
 3. Благодаря последовательному выполнению трех команд, реализуйте
