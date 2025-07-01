@@ -14,7 +14,6 @@ class ImageProcessingApp(tk.Tk):
         self.geometry("1200x800")
         self.configure(bg="#f0f0f0")
 
-        # Стилизация
         self.style = ttk.Style()
         self.style.theme_use('clam')
         self.style.configure('TFrame', background="#f0f0f0")
@@ -45,11 +44,9 @@ class ImageProcessingApp(tk.Tk):
         main_frame = ttk.Frame(self, padding=15)
         main_frame.pack(fill=tk.BOTH, expand=True)
 
-        # Панель управления
         control_frame = ttk.LabelFrame(main_frame, text="Управление", padding=10)
         control_frame.pack(side=tk.TOP, fill=tk.X, pady=(0, 15))
 
-        # Кнопки загрузки
         load_frame = ttk.Frame(control_frame)
         load_frame.pack(side=tk.LEFT, padx=10)
 
@@ -81,7 +78,6 @@ class ImageProcessingApp(tk.Tk):
         )
         self.camera_status.pack(pady=5)
 
-        # Цветовые каналы
         channel_frame = ttk.LabelFrame(control_frame, text="Цветовые каналы", padding=10)
         channel_frame.pack(side=tk.LEFT, padx=10)
 
@@ -97,7 +93,6 @@ class ImageProcessingApp(tk.Tk):
                 command=self.apply_channel
             ).pack(side=tk.LEFT, padx=5)
 
-        # Операции
         operation_frame = ttk.LabelFrame(control_frame, text="Операции", padding=10)
         operation_frame.pack(side=tk.LEFT, padx=10)
 
@@ -119,7 +114,6 @@ class ImageProcessingApp(tk.Tk):
             command=self.draw_line_dialog
         ).pack(side=tk.LEFT, padx=5)
 
-        # Область изображения
         img_frame = ttk.LabelFrame(main_frame, text="Изображение", padding=10)
         img_frame.pack(fill=tk.BOTH, expand=True)
 
@@ -132,7 +126,6 @@ class ImageProcessingApp(tk.Tk):
         self.scroll_x.pack(side=tk.BOTTOM, fill=tk.X)
         self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-        # Статус бар
         self.status_var = tk.StringVar(value="Готов к работе")
         status_bar = ttk.Label(
             self,
