@@ -43,5 +43,4 @@ practiceeee/
 ├── app.py               # Основной код приложения
 ├── requirements.txt     # Зависимости
 ├── README.md            # Документация
-└── .gitignore           # Гитигнор
 ```
