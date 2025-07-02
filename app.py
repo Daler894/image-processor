@@ -200,31 +200,40 @@ class ImageProcessingApp(tk.Tk):
             state=tk.NORMAL if self.camera_available else tk.DISABLED)
 
     def load_image(self):
-        """Загрузка изображения из файла."""
-        file_path = filedialog.askopenfilename(
-            filetypes=[("Изображения", "*.jpg *.jpeg *.png")]
-        )
+        """Загрузка изображения из файла с обработкой ошибок"""
+        filetypes = [
+            ("Изображения", "*.jpg *.jpeg *.png"),
+            ("Все файлы", "*.*")
+        ]
 
-        if not file_path:
+        path = filedialog.askopenfilename(filetypes=filetypes)
+        if not path:
             return
 
         try:
-            image = cv2.imread(file_path)
+            # Используем raw-строку для пути и проверяем доступность файла
+            image = cv2.imread(r'{}'.format(path))
             if image is None:
-                raise ValueError("Не удалось загрузить изображение")
+                raise ValueError(
+                    "Не удалось загрузить изображение. Проверьте:\n"
+                    "1. Корректность пути к файлу\n"
+                    "2. Поддерживаемый формат (JPEG, PNG)\n"
+                    "3. Отсутствие кириллицы в пути"
+                )
 
-            self.original_image = cv2.cvtColor(
-                image, cv2.COLOR_BGR2RGB)
+            # Конвертация цветового пространства
+            self.original_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             self.current_image = self.original_image.copy()
-            self.channel_var.set("Все")
-            self.show_image()
-            self.status_var.set(f"Изображение загружено: {file_path}")
+            self._update_image_display()
+            self.status_var.set(f"Успешно загружено: {path}")
 
         except Exception as e:
             messagebox.showerror(
                 "Ошибка загрузки",
-                f"Не удалось загрузить изображение:\n{str(e)}"
+                str(e)
             )
+            # Логирование ошибки для диагностики
+            print(f"Ошибка при загрузке {path}: {str(e)}")
 
     def capture_from_camera(self):
         """Захват изображения с камеры."""
