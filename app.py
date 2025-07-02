@@ -23,7 +23,7 @@ class ImageProcessingApp(tk.Tk):
         self.geometry("1200x800")
         self.configure(bg="#f0f0f0")
 
-        # Инициализация атрибутов
+
         self.original_image = None  # Исходное изображение
         self.current_image = None   # Текущее обработанное изображение
         self.photo_image = None    # Изображение для отображения в Tkinter
@@ -42,7 +42,6 @@ class ImageProcessingApp(tk.Tk):
 
     def setup_ui(self):
         """Настройка пользовательского интерфейса."""
-        # Стили для элементов интерфейса
         self.style = ttk.Style()
         self.style.theme_use('clam')
         self.style.configure('TFrame', background="#f0f0f0")
@@ -53,17 +52,14 @@ class ImageProcessingApp(tk.Tk):
         self.style.configure('Title.TLabel',
                              font=('Helvetica', 12, 'bold'))
 
-        # Попытка загрузки иконки
         try:
             self.iconbitmap("icon.ico")
         except tk.TclError:
             pass
 
-        # Главный фрейм
         main_frame = ttk.Frame(self, padding=15)
         main_frame.pack(fill=tk.BOTH, expand=True)
 
-        # Создание элементов интерфейса
         self.create_control_frame(main_frame)  # Панель управления
         self.create_image_frame(main_frame)    # Область изображения
         self.create_status_bar()               # Строка состояния
@@ -74,10 +70,9 @@ class ImageProcessingApp(tk.Tk):
                                        padding=10)
         control_frame.pack(side=tk.TOP, fill=tk.X, pady=(0, 15))
 
-        # Создание подфреймов панели управления
-        self.create_load_frame(control_frame)     # Загрузка/сброс
-        self.create_channel_frame(control_frame)  # Цветовые каналы
-        self.create_operation_frame(control_frame) # Операции с изображением
+        self.create_load_frame(control_frame)
+        self.create_channel_frame(control_frame)
+        self.create_operation_frame(control_frame) 
 
     def create_load_frame(self, parent):
         """Создание фрейма с кнопками загрузки, сброса и съемки."""
