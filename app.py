@@ -72,14 +72,13 @@ class ImageProcessingApp(tk.Tk):
 
         self.create_load_frame(control_frame)
         self.create_channel_frame(control_frame)
-        self.create_operation_frame(control_frame) 
+        self.create_operation_frame(control_frame)
 
     def create_load_frame(self, parent):
         """Создание фрейма с кнопками загрузки, сброса и съемки."""
         load_frame = ttk.Frame(parent)
         load_frame.pack(side=tk.LEFT, padx=10)
 
-        # Кнопки управления
         ttk.Button(
             load_frame,
             text="Загрузить изображение",
@@ -100,7 +99,6 @@ class ImageProcessingApp(tk.Tk):
             command=self.reset_image
         ).pack(pady=5)
 
-        # Статус камеры
         self.camera_status = ttk.Label(
             load_frame,
             text="Камера: проверка...",
@@ -115,7 +113,6 @@ class ImageProcessingApp(tk.Tk):
                                        padding=10)
         channel_frame.pack(side=tk.LEFT, padx=10)
 
-        # Переключатели цветовых каналов
         self.channel_var = tk.StringVar(value="Все")
         channels = ["Все", "Красный", "Зеленый", "Синий"]
 
@@ -135,7 +132,6 @@ class ImageProcessingApp(tk.Tk):
                                          padding=10)
         operation_frame.pack(side=tk.LEFT, padx=10)
 
-        # Кнопки операций
         ttk.Button(
             operation_frame,
             text="Повысить яркость",
@@ -170,7 +166,6 @@ class ImageProcessingApp(tk.Tk):
         self.canvas.configure(yscrollcommand=self.scroll_y.set,
                               xscrollcommand=self.scroll_x.set)
 
-        # Размещение элементов
         self.scroll_y.pack(side=tk.RIGHT, fill=tk.Y)
         self.scroll_x.pack(side=tk.BOTTOM, fill=tk.X)
         self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
@@ -189,7 +184,7 @@ class ImageProcessingApp(tk.Tk):
 
     def check_camera(self):
         """Проверка доступности камеры."""
-        cap = cv2.VideoCapture(0)  # pylint: disable=no-member
+        cap = cv2.VideoCapture(0)
         if cap is None or not cap.isOpened():
             return False
         cap.release()
@@ -214,13 +209,12 @@ class ImageProcessingApp(tk.Tk):
             return
 
         try:
-            # Загрузка и конвертация изображения
-            image = cv2.imread(file_path)  # pylint: disable=no-member
+            image = cv2.imread(file_path)
             if image is None:
                 raise ValueError("Не удалось загрузить изображение")
 
-            self.original_image = cv2.cvtColor(  # pylint: disable=no-member
-                image, cv2.COLOR_BGR2RGB)  # pylint: disable=no-member
+            self.original_image = cv2.cvtColor(
+                image, cv2.COLOR_BGR2RGB)
             self.current_image = self.original_image.copy()
             self.channel_var.set("Все")
             self.show_image()
@@ -241,8 +235,7 @@ class ImageProcessingApp(tk.Tk):
             )
             return
 
-        # Захват кадра с камеры
-        cap = cv2.VideoCapture(0)  # pylint: disable=no-member
+        cap = cv2.VideoCapture(0)
         ret, frame = cap.read()
         cap.release()
 
@@ -253,9 +246,8 @@ class ImageProcessingApp(tk.Tk):
             )
             return
 
-        # Обработка и отображение кадра
-        self.original_image = cv2.cvtColor(  # pylint: disable=no-member
-            frame, cv2.COLOR_BGR2RGB)  # pylint: disable=no-member
+        self.original_image = cv2.cvtColor(
+            frame, cv2.COLOR_BGR2RGB)
         self.current_image = self.original_image.copy()
         self.channel_var.set("Все")
         self.show_image()
@@ -266,7 +258,7 @@ class ImageProcessingApp(tk.Tk):
         if self.current_image is None:
             return
 
-        # Масштабирование изображения при необходимости
+
         img = self.current_image.copy()
         height, width = img.shape[:2]
         max_size = 800
@@ -274,12 +266,11 @@ class ImageProcessingApp(tk.Tk):
         if max(height, width) > max_size:
             scale = max_size / max(height, width)
             new_w, new_h = int(width * scale), int(height * scale)
-            img = cv2.resize(  # pylint: disable=no-member
+            img = cv2.resize(
                 img, (new_w, new_h),
-                interpolation=cv2.INTER_AREA  # pylint: disable=no-member
+                interpolation=cv2.INTER_AREA
             )
 
-        # Конвертация для Tkinter и отображение
         img_pil = Image.fromarray(img)
         self.photo_image = ImageTk.PhotoImage(img_pil)
 
@@ -306,30 +297,27 @@ class ImageProcessingApp(tk.Tk):
         if channel == "Все":
             self.current_image = self.original_image.copy()
         else:
-            # Разделение на каналы
-            b, g, r = cv2.split(  # pylint: disable=no-member
-                cv2.cvtColor(  # pylint: disable=no-member
+            b, g, r = cv2.split(
+                cv2.cvtColor(
                     self.original_image,
-                    cv2.COLOR_RGB2BGR  # pylint: disable=no-member
+                    cv2.COLOR_RGB2BGR
                 )
             )
             zeros = np.zeros_like(b)
 
-            # Выбор нужного канала
             if channel == "Красный":
-                self.current_image = cv2.merge(  # pylint: disable=no-member
+                self.current_image = cv2.merge(
                     [zeros, zeros, r])
             elif channel == "Зеленый":
-                self.current_image = cv2.merge(  # pylint: disable=no-member
+                self.current_image = cv2.merge(
                     [zeros, g, zeros])
             elif channel == "Синий":
-                self.current_image = cv2.merge(  # pylint: disable=no-member
+                self.current_image = cv2.merge(
                     [b, zeros, zeros])
 
-            # Обратная конвертация
-            self.current_image = cv2.cvtColor(  # pylint: disable=no-member
+            self.current_image = cv2.cvtColor(
                 self.current_image,
-                cv2.COLOR_BGR2RGB  # pylint: disable=no-member
+                cv2.COLOR_BGR2RGB
             )
 
         self.show_image()
@@ -344,13 +332,11 @@ class ImageProcessingApp(tk.Tk):
             )
             return
 
-        # Создание диалогового окна
         dialog = tk.Toplevel(self)
         dialog.title("Настройка яркости")
         dialog.resizable(False, False)
         dialog.grab_set()
 
-        # Элементы диалога
         ttk.Label(
             dialog,
             text="Значение увеличения яркости (0-100):"
@@ -377,23 +363,20 @@ class ImageProcessingApp(tk.Tk):
 
     def adjust_brightness(self, value):
         """Регулировка яркости изображения."""
-        # Конвертация в HSV и работа с каналом яркости
-        hsv = cv2.cvtColor(  # pylint: disable=no-member
+        hsv = cv2.cvtColor(
             self.current_image,
-            cv2.COLOR_RGB2HSV  # pylint: disable=no-member
+            cv2.COLOR_RGB2HSV
         )
-        hue, sat, val = cv2.split(hsv)  # pylint: disable=no-member
+        hue, sat, val = cv2.split(hsv)
 
-        # Увеличение яркости
         lim = 255 - value
         val[val > lim] = 255
         val[val <= lim] += value
 
-        # Обратная конвертация
-        final_hsv = cv2.merge((hue, sat, val))  # pylint: disable=no-member
-        self.current_image = cv2.cvtColor(  # pylint: disable=no-member
+        final_hsv = cv2.merge((hue, sat, val))
+        self.current_image = cv2.cvtColor(
             final_hsv,
-            cv2.COLOR_HSV2RGB  # pylint: disable=no-member
+            cv2.COLOR_HSV2RGB
         )
         self.show_image()
         self.status_var.set(f"Яркость увеличена на {value}")
@@ -407,15 +390,13 @@ class ImageProcessingApp(tk.Tk):
             )
             return
 
-        # Преобразование в градации серого
-        gray = cv2.cvtColor(  # pylint: disable=no-member
+        gray = cv2.cvtColor(
             self.current_image,
-            cv2.COLOR_RGB2GRAY  # pylint: disable=no-member
+            cv2.COLOR_RGB2GRAY
         )
-        # Обратная конвертация в RGB для отображения
-        self.current_image = cv2.cvtColor(  # pylint: disable=no-member
+        self.current_image = cv2.cvtColor(
             gray,
-            cv2.COLOR_GRAY2RGB  # pylint: disable=no-member
+            cv2.COLOR_GRAY2RGB
         )
         self.show_image()
         self.status_var.set("Изображение преобразовано в оттенки серого")
@@ -429,17 +410,14 @@ class ImageProcessingApp(tk.Tk):
             )
             return
 
-        # Создание диалогового окна
         dialog = tk.Toplevel(self)
         dialog.title("Параметры линии")
         dialog.resizable(False, False)
         dialog.grab_set()
 
-        # Получение размеров изображения
         width = self.current_image.shape[1]
         height = self.current_image.shape[0]
 
-        # Поля ввода координат и толщины
         ttk.Label(
             dialog,
             text=f"X начальной точки (0-{width - 1})"
@@ -485,7 +463,6 @@ class ImageProcessingApp(tk.Tk):
                 y2 = int(y2_entry.get())
                 thickness = int(thickness_entry.get())
 
-                # Проверка корректности параметров
                 if not (0 <= x1 < width and 0 <= y1 < height and
                         0 <= x2 < width and 0 <= y2 < height and
                         1 <= thickness <= 20):
@@ -517,8 +494,7 @@ class ImageProcessingApp(tk.Tk):
             thickness (int): Толщина линии
         """
         img = self.current_image.copy()
-        # Рисование зеленой линии
-        cv2.line(  # pylint: disable=no-member
+        cv2.line(
             img,
             (start_x, start_y),
             (end_x, end_y),
